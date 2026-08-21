@@ -1,0 +1,133 @@
+# ~/.codex/config.toml
+# Balanced Codex CLI defaults:
+# - safe interactive editing
+# - visible context and quota usage
+# - reasonable token usage without sacrificing too much quality
+
+###############################################################################
+# Model and response behavior
+###############################################################################
+
+# Current recommended general model in the Codex sample configuration.
+# Remove this line to let Codex choose its built-in default.
+model = "gpt-5.6"
+model_provider = "openai"
+personality = "pragmatic"
+
+# Balanced default. Change to "low" for routine tasks and "high" only for
+# genuinely difficult debugging, architecture, or large refactors.
+model_reasoning_effort = "medium"
+plan_mode_reasoning_effort = "medium"
+
+# Keep reasoning summaries and final responses compact.
+model_reasoning_summary = "concise"
+model_verbosity = "low"
+
+###############################################################################
+# Safety and permissions
+###############################################################################
+
+# Codex can edit the current workspace, but asks when elevated access is needed.
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+# Cached search is a good default for routine coding. Change to "live" when
+# working with rapidly changing libraries or when you need current information.
+web_search = "cached"
+
+# Stops one enormous test log, stack trace, or generated file from consuming
+# too much of the active conversation context.
+tool_output_token_limit = 12000
+
+# Let Codex infer these from the selected model. Manually setting the wrong
+# values can cause premature or late compaction.
+model_context_window = 272000
+model_auto_compact_token_limit = 250000
+# model_auto_compact_token_limit_scope = "total"
+
+# Alternatives: "cursor", "windsurf", "vscode-insiders", or "none".
+file_opener = "vscode"
+
+###############################################################################
+# Workspace sandbox
+###############################################################################
+
+[sandbox_workspace_write]
+
+# Shell commands cannot access the network silently. Codex can request approval
+# when package installation or another network operation is actually needed.
+network_access = false
+writable_roots = []
+
+###############################################################################
+# Multi-agent quota control
+###############################################################################
+
+[agents]
+
+# Keep subagents available, but prevent a task from spawning too many at once.
+enabled = true
+max_concurrent_threads_per_session = 3
+default_subagent_reasoning_effort = "low"
+
+###############################################################################
+# Memory quota protection
+###############################################################################
+
+[memories]
+
+# Do not start memory generation when either Codex rate-limit window has less
+# than 50% remaining. The documented default is 25%.
+min_rate_limit_remaining_percent = 50
+
+###############################################################################
+# Local history
+###############################################################################
+
+[history]
+
+# This is local transcript storage, not the active model context.
+persistence = "save-all"
+
+# Cap history.jsonl at 20 MiB; the oldest entries are removed first.
+max_bytes = 20971520
+
+###############################################################################
+# Environment-variable safety
+###############################################################################
+
+[shell_environment_policy]
+
+inherit = "all"
+
+# Filter inherited variable names containing KEY, SECRET, or TOKEN from spawned
+# shell processes. Add explicit exceptions only for projects that require them.
+ignore_default_excludes = false
+
+###############################################################################
+# Terminal UI
+###############################################################################
+
+[tui]
+
+notifications = ["agent-turn-complete", "approval-requested"]
+notification_method = "auto"
+notification_condition = "unfocused"
+
+# Shows:
+# - selected model and reasoning effort
+# - active context remaining
+# - tokens used in this session
+# - ChatGPT Codex 5-hour and weekly quota remaining, when available
+# - working directory and Git branch
+status_line = [
+  "model-with-reasoning",
+  "context-remaining",
+  "used-tokens",
+  "five-hour-limit",
+  "weekly-limit",
+  "current-dir",
+  "git-branch",
+]
+
+terminal_title = ["spinner", "project", "git-branch"]

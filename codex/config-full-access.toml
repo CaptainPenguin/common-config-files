@@ -1,0 +1,143 @@
+# ~/.codex/config.toml
+#
+# HIGH-AUTONOMY / FULL-ACCESS CONFIG
+#
+# WARNING:
+# This configuration gives Codex unrestricted local filesystem/process access,
+# unrestricted shell network access, live web search, and no normal command
+# approval prompts. Only use it on a machine/repositories you trust and where
+# you have reliable backups/version control.
+
+###############################################################################
+# Model behavior
+###############################################################################
+
+model = "gpt-5.6"
+model_provider = "openai"
+personality = "pragmatic"
+
+# Balanced quality/cost for the main agent.
+model_reasoning_effort = "medium"
+plan_mode_reasoning_effort = "medium"
+model_reasoning_summary = "concise"
+model_verbosity = "medium"
+
+###############################################################################
+# Maximum autonomy
+###############################################################################
+
+# Never stop to ask for normal command/sandbox approval.
+approval_policy = "never"
+
+# Disable the execution sandbox. Commands can access the whole filesystem
+# and the network with the same OS permissions as the user running Codex.
+sandbox_mode = "danger-full-access"
+
+# Use current/live web results rather than only cached search results.
+web_search = "live"
+
+# Allow shell tools to launch login shells when useful.
+allow_login_shell = true
+
+###############################################################################
+# Context / output management
+###############################################################################
+
+# Prevent a single giant command result from consuming excessive model context.
+tool_output_token_limit = 12000
+
+# Let Codex obtain context-window / compaction limits from model metadata.
+model_context_window = 272000
+model_auto_compact_token_limit = 250000
+
+# Open file citations in VS Code.
+file_opener = "vscode"
+
+###############################################################################
+# Multi-agent automation
+###############################################################################
+
+[agents]
+
+enabled = true
+
+# Allows several independent workers while avoiding an excessive agent swarm.
+# Increase this if you explicitly want more parallelism and accept higher quota use.
+max_concurrent_threads_per_session = 4
+
+# Keep delegated routine work relatively economical.
+default_subagent_reasoning_effort = "low"
+
+###############################################################################
+# Memory quota protection
+###############################################################################
+
+[memories]
+
+# Optional memory-generation work starts only while at least half of the
+# relevant Codex rate-limit window remains.
+min_rate_limit_remaining_percent = 50
+
+###############################################################################
+# Local session history
+###############################################################################
+
+[history]
+
+persistence = "save-all"
+max_bytes = 20971520
+
+###############################################################################
+# Shell environment
+###############################################################################
+
+[shell_environment_policy]
+
+# Inherit the normal shell environment.
+inherit = "all"
+
+# TRUE means variables whose names contain KEY / SECRET / TOKEN are NOT
+# automatically filtered. This is intentionally permissive so automated tools
+# can use credentials already present in your environment.
+#
+# SECURITY WARNING: commands/scripts Codex runs can therefore receive secrets
+# such as API keys and access tokens.
+ignore_default_excludes = true
+
+###############################################################################
+# Connected app defaults
+###############################################################################
+
+[apps._default]
+
+enabled = true
+
+# Do not make app tools stop for their normal approval flow.
+default_tools_approval_mode = "approve"
+
+# Permit app tools marked as destructive or open-world.
+# These matter only for connected apps/tools that expose those capabilities.
+destructive_enabled = true
+open_world_enabled = true
+
+###############################################################################
+# Terminal UI
+###############################################################################
+
+[tui]
+
+notifications = ["agent-turn-complete", "approval-requested"]
+notification_method = "auto"
+notification_condition = "unfocused"
+
+status_line = [
+  "model-with-reasoning",
+  "context-remaining",
+  "used-tokens",
+  "five-hour-limit",
+  "weekly-limit",
+  "current-dir",
+  "git-branch",
+]
+
+terminal_title = ["spinner", "project", "git-branch"]
