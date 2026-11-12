@@ -14,7 +14,6 @@
       "read_url(*)",
       "execute_url(*)",
       "command(*)",
-      "unsandboxed(*)",
       "mcp(*)"
     ],
     "ask": [],

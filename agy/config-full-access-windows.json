@@ -1,0 +1,31 @@
+{
+  "agentMode": "accept-edits",
+
+  "toolPermission": "always-proceed",
+  "artifactReviewPolicy": "always-proceed",
+
+  "allowNonWorkspaceAccess": true,
+  "enableTerminalSandbox": false,
+
+  "permissions": {
+    "allow": [
+      "read_file(*)",
+      "write_file(*)",
+      "read_url(*)",
+      "execute_url(*)",
+      "command(*)",
+      "mcp(*)"
+    ],
+    "ask": [],
+    "deny": []
+  },
+
+  "statusLine": {
+    "type": "command",
+    "command": "%USERPROFILE%/.gemini/antigravity-cli/statusline.cmd",
+    "enabled": true,
+    "padding": 0,
+    "stack_with_default": false
+  },
+  "notifications": true
+}

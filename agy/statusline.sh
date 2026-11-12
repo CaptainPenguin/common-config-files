@@ -1,9 +1,21 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-python3 -c '
+# Use python if available, otherwise fallback to python3
+if command -v python >/dev/null 2>&1; then
+    PY_CMD="python"
+elif command -v python3 >/dev/null 2>&1; then
+    PY_CMD="python3"
+else
+    echo "Python not found"
+    exit 1
+fi
+
+"$PY_CMD" -c '
 import json, sys
 
 try:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
     d = json.load(sys.stdin)
     if not isinstance(d, dict):
         d = {}
